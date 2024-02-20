@@ -53,3 +53,85 @@ print((s10 > -5) & (s10 < 5)) # Series 에서는 and 연산 불가능
 s11 = pd.Series([-10, 2, 3, 7])
 print(s10 + s11) # 같은 index 이름끼리 계산
 print(s10 <= s11)
+
+import numpy as np
+s20 = pd.Series(np.random.randint(0, 1000, 100))
+
+print(s20[s20 >= 900])
+print(s20[(s20 >= 100) & (s20 <= 200)])
+print(s20[s20.between(100, 200)])
+
+print(np.where(s20.between(200, 250)))
+
+# 주요 메소드
+print(s20.dtype) # Series의 데이터 타입
+print(s20.size) # 원소의 개수
+print(s20.shape) # Series의 형태
+print(s20.index) # index 이름을 조회
+
+print(s20.head()) # 앞에 5개 조회
+print(s20.tail()) # 뒤에 5개 조회
+
+s30 = pd.Series(np.random.choice(['Python', 'Java', 'C', 'Go', 'Rust'], 100))
+print(s30.value_counts()) # 범주값들의 개수
+print(s30.value_counts(normalize=True)) # 비율로 알려줌
+
+# 정렬
+s40 = pd.Series([20, 6, -10, 100, 7], index = ['Z', 'R', 'A', 'B', 'S'])
+print(s40.sort_index()) # index 오름차순 정렬, 원본 유지
+print(s40.sort_index(ascending=False)) # 내림차순
+print(s40.sort_index(inplace=True)) # 원본 정렬
+print(s40.sort_values()) # 값 오름차순 정렬
+
+# 기술 통계량
+print(s40.max(), s40.min()) # 최대, 최소
+print(s40.idxmax(), s40.idxmin()) # 최대, 최소의 index 
+print(s40.sum(), s40.mean(), s40.median()) # 합계, 평균 중앙값
+print(s40.std(), s40.var()) # 표준편차, 분산
+
+# 범주형
+print(s30.mode()) # 최빈값
+
+# 분위수
+s60 = pd.Series(np.random.randint(100, 1000, 100))
+print(s60.quantile(q = [0.5])) # 중위수
+print(s60.quantile(q = [0.25, 0.5, 0.75])) # 4분위
+
+print(s60.describe()) # count(): 결측치 아닌 원소의 개수
+# 원소들이 범주형 문자열일 때
+print(s30.describe())
+'''
+count      100 # 결측치 아닌 원소들의 개수
+unique       5 # 고유값(범주값)의 개수
+top          C # 최빈값
+freq        24 # 최빈값의 빈도수(개수)
+'''
+
+# 결측치
+import pandas as pd
+import numpy as np
+s = pd.Series([10, 2, 40, 7, 20, np.nan, 50, np.nan, 10])
+print(s)
+
+# 결측치 확인 
+print(s.isnull())
+# print(s.isna())
+# print(s.notnull()) # 결측치가 아닌지
+
+# 결측치 처리
+# 제거
+print(s.dropna()) # 결측치 제거한 결과 원본은 변경 안됨
+
+s2 = s.copy()
+s2.dropna(inplace=True)
+print(s2)
+
+# 다른 값으로 대체
+print(s.fillna(100000))
+
+print(s.mean()) # pandas는 NaN을 빼고 평균 계산, Numpy는 포함해서 계산
+print(s.mean(skipna=False)) # 결측치 포함 계산
+print(s.sum(skipna=False))
+
+print(s.fillna(round(s.mean(), 2))) # 평균값 대체
+print(s.fillna(round(s.median(), 2))) # 중앙값 대체
