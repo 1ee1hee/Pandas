@@ -33,3 +33,28 @@ print(result['color'].value_counts())
 
 # 3-2.
 print(dia.groupby('color')['carat'].agg(lambda x : x.max() - x.min()))
+
+# 4. clarity 별 평균 가격 컬럼을 DataFrame에 추가
+result = dia.groupby('clarity')['price'].transform('mean')
+dia.insert(7, 'clarity별 평균가격', result)
+print(dia)
+
+
+
+#####################################################
+# 1. data/diamonds.csv를 읽어 DataFrame으로 만든다
+dia = pd.read_csv('data/diamonds.csv')
+df = pd.DataFrame(dia)
+print(df)
+
+# 2. price 컬럼을 '고가', '중가', '저가' 세개의 범주값을 가지는 "price_cate" 컬럼을 생성한다.
+price_cate = pd.cut(df['price'], bins=3,
+                    labels=['저가', '중가', '고가'])
+df['price_cate'] = price_cate
+print(df['price_cate'])
+
+# 3. 가격대(price_cate) 별 carat의 평균을 조회
+print(df.groupby('price_cate')['carat'].mean())
+
+# 4. 가격대(price_cate)와 cut 별 평균 가격(price)를 피봇테이블로 조회
+print(df.pivot_table(index=['cut', 'color'], columns = 'price_cate', values = 'carat', aggfunc = 'mean'))
