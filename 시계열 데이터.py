@@ -189,3 +189,22 @@ print(df.groupby([pd.Grouper(freq='Q'), 'Volume'])['Close'].mean())
 
 
 # 기간 이동 집계
+# 종가의 5일 이동 평균
+moving_avg = df['Close'].rolling(window = 5).mean() # 자기포함 앞에 5개 평균
+moving_avg2 = df['Close'].rolling(window = 20).mean() # 20일 이동 평균
+print(moving_avg.head(60))
+print(moving_avg2.head(60))
+
+moving_avg3 = df['Close'].rolling(window = 20, min_periods = 3).mean()
+print(moving_avg3)
+
+print(df['Close'].rolling(window = 20, center = True).mean().head(60))
+
+v = moving_avg2.first('Y') # 20일 이동 평균
+v2 = df['Close'].first('Y') # 원래 데이터
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(20,6))
+v.plot()
+v2.plot()
+plt.show()
